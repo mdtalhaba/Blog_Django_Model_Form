@@ -2,7 +2,28 @@
 
 {% block content %}
 
-<h1>This is Home Page</h1>
+<div class="container mt-5">
+    <div class="row row-gap-4">
+        {% for post in data %}
+        <div class="col-sm-6 mb-3 mb-sm-0">
+            <div class="card">
+              <div class="card-body">
+                <h5 class="card-title">{{post.title}}</h5>
+                <p class="card-text">{{post.content}}</p>
+                <p>Author : {{post.author.name}}</p>
+                <div class="my-3">
+                    {% for category in post.category.all %}
+                    <small class="bg-secondary-subtle m-1 rounded px-2 py-1">{{category.name}}</small>
+                    {% endfor %}
+                </div>
+                <a href="{% url "edit_post" post.id %}" class="btn btn-dark">Edit</a>
+                <a href="{% url "delete_post" post.id %}" class="btn btn-danger">Delete</a>
+              </div>
+            </div>
+          </div>
+          {% endfor %}
+      </div>
+</div>
 
 {% endblock content %}
 

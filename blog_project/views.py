@@ -1,4 +1,6 @@
 from django.shortcuts import render
+from posts.models import Post
 
 def index(req) :
-    return render(req, 'index.html')
+    data = Post.objects.all()
+    return render(req, 'index.html', {'data' : data})
