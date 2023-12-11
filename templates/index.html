@@ -2,27 +2,38 @@
 
 {% block content %}
 
-<div class="container mt-5">
-    <div class="row row-gap-4">
-        {% for post in data %}
-        <div class="col-sm-6 mb-3 mb-sm-0">
-            <div class="card">
-              <div class="card-body">
-                <h5 class="card-title">{{post.title}}</h5>
-                <p class="card-text">{{post.content}}</p>
-                <p>Author : {{post.author.name}}</p>
-                <div class="my-3">
-                    {% for category in post.category.all %}
-                    <small class="bg-secondary-subtle m-1 rounded px-2 py-1">{{category.name}}</small>
-                    {% endfor %}
-                </div>
-                <a href="{% url "edit_post" post.id %}" class="btn btn-dark">Edit</a>
-                <a href="{% url "delete_post" post.id %}" class="btn btn-danger">Delete</a>
+<div class="mx-5 row mt-5">
+    <div class="col-2 bg-secondary-subtle py-3 border border-5 rounded-3 border-dark" style="min-height: 600px;">
+      <div>
+        <h5>All Categories</h5>
+        {% for cate in category %}
+        <a class="text-decoration-none text-dark fw-semibold"  href="{% url "category_slug" cate.slug %}">
+          <li class="list-unstyled border border-1 rounded-1 p-2 my-2 border-black" style="background-color: rgb(241, 241, 241);">
+            {{cate.name}}
+          </li>
+        </a>
+        {% endfor %}
+      </div>
+    </div>
+    <div class="row col-10 row-gap-4 ps-5 h-100">
+      <small>{{ data | length }} Results Found</small>
+      {% for post in data %}
+      <div class="col-sm-6 mb-3 mb-sm-0">
+          <div class="card border-0 shadow">
+            <div class="card-body">
+              <h5 class="card-title">{{post.title}}</h5>
+              <p class="card-text">{{post.content}}</p>
+              <p>Author : {{post.author.first_name}} {{post.author.last_name}}</p>
+              <div class="my-3">
+                  {% for category in post.category.all %}
+                  <small class="bg-secondary-subtle m-1 rounded px-2 py-1">{{category.name}}</small>
+                  {% endfor %}
               </div>
             </div>
           </div>
-          {% endfor %}
-      </div>
+        </div>
+        {% endfor %}
+    </div>
 </div>
 
 {% endblock content %}
