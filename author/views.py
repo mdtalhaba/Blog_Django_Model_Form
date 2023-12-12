@@ -4,6 +4,8 @@ from django.contrib.auth.forms import AuthenticationForm, PasswordChangeForm
 from django.contrib.auth import authenticate, login, logout, update_session_auth_hash
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.views import LoginView, LogoutView
+from django.urls import reverse_lazy
 from posts.models import Post
 
 
@@ -19,6 +21,7 @@ def register(req) :
     return render(req, 'author/register.html', {'form' : register_form, 'type' : 'Register'})
 
 
+# User Login Using Function View
 def user_login(req) :
     if req.method == 'POST' :
         login_form = AuthenticationForm(req, req.POST)
@@ -38,9 +41,38 @@ def user_login(req) :
     return render(req, 'author/register.html', {'form': login_form, 'type' : 'Login'})
 
 
+# User Login Using Class View
+class UserLoginView(LoginView) :
+    template_name = 'author/register.html'
+    
+    def get_success_url(self):
+        return reverse_lazy('home')
+    
+    def form_valid(self, form):
+        messages.success(self.request, 'Log In Successfull')
+        return super().form_valid(form)
+    
+    def form_invalid(self, form):
+        messages.warning(self.request, 'Log In Information is Incorrenct')
+        return super().form_invalid(form)
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["type"] = 'Log In'
+        return context
+    
+    
+
+
+# User Logout Using Function View
 def user_logout(req) :
     logout(req)
     return redirect('login')
+
+# User Logout Using Class View
+class UserLogoutView(LogoutView) :    
+    def get_success_url(self):
+        return reverse_lazy('login')
 
 
 @login_required(login_url="/author/login/")
