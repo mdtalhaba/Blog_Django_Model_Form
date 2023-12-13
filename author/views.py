@@ -1,15 +1,17 @@
 from django.shortcuts import render, redirect
-from author.forms import RegistrationForm, ChangeUserForm
+from author.forms import RegistrationForm, ChangeUserForm, User
 from django.contrib.auth.forms import AuthenticationForm, PasswordChangeForm
 from django.contrib.auth import authenticate, login, logout, update_session_auth_hash
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
 from django.contrib.auth.views import LoginView, LogoutView
+from django.views.generic import CreateView
 from django.urls import reverse_lazy
 from posts.models import Post
 
 
+# User Register Using Function View
 def register(req) :
     if not req.user.is_authenticated :
         if req.method == 'POST' :
@@ -23,6 +25,23 @@ def register(req) :
         return render(req, 'author/register.html', {'form' : register_form, 'type' : 'Register'})
     else :
         return redirect('home')
+    
+
+# User Register Using Class View
+class UserRegisterView(CreateView) :
+    model = User
+    form_class = RegistrationForm
+    template_name = 'author/register.html'
+    success_url = reverse_lazy('login')
+
+    def form_valid(self, form):
+        messages.success(self.request, 'Registration Successfull')
+        return super().form_valid(form)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["type"] = 'Register'
+        return context
 
 
 # User Login Using Function View
