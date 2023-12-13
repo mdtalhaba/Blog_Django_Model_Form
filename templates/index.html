@@ -2,10 +2,11 @@
 
 {% block content %}
 
-<div class="mx-5 row mt-5">
-    <div class="col-2 p-0 h-100">
-      <div class="bg-secondary-subtle py-3 border border-5 rounded-3 border-dark h-100 p-3" style="min-height: 600px;">
-        <h5>All Categories</h5>
+<div class="mx-5 row pe-0 mt-5">
+  
+    <div class="col-2 p-0">
+      <div class="bg-secondary-subtle py-3 border border-5 rounded-3 border-dark p-3 overflow-auto" style="height: 600px; width:240px; position: fixed;">
+        <h5><a class="text-decoration-none text-dark fw-bold" href="{% url "home" %}">All Categories</a></h5>
         {% for cate in category %}
         <a class="text-decoration-none text-dark fw-semibold"  href="{% url "category_slug" cate.slug %}">
           <li class="list-unstyled border border-1 rounded-1 p-2 my-2 border-black" style="background-color: rgb(241, 241, 241);">
@@ -16,10 +17,11 @@
       </div>
     </div>
 
-    <div class="row col-10 row-gap-4 ps-5 h-100">
+    <div class="col-10 ps-5 pe-0 h-100">
       <small>{{ data | length }} Results Found</small>
 
-      {% for post in data %}
+      <div class="row align-self-end pt-3 row-gap-4">
+        {% for post in data %}
 
       <div class="col-sm-6 mb-3 mb-sm-0">
           <div class="card border-0 rounded-0 shadow">
@@ -46,6 +48,7 @@
         </div>
 
         {% endfor %}
+      </div>
     </div>
 </div>
 

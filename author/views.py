@@ -4,21 +4,25 @@ from django.contrib.auth.forms import AuthenticationForm, PasswordChangeForm
 from django.contrib.auth import authenticate, login, logout, update_session_auth_hash
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
+from django.utils.decorators import method_decorator
 from django.contrib.auth.views import LoginView, LogoutView
 from django.urls import reverse_lazy
 from posts.models import Post
 
 
 def register(req) :
-    if req.method == 'POST' :
-        register_form = RegistrationForm(req.POST)
-        if register_form.is_valid() :
-            messages.success(req, 'Registration Successfull')
-            register_form.save()
-            return redirect('register')
-    else : 
-        register_form = RegistrationForm()
-    return render(req, 'author/register.html', {'form' : register_form, 'type' : 'Register'})
+    if not req.user.is_authenticated :
+        if req.method == 'POST' :
+            register_form = RegistrationForm(req.POST)
+            if register_form.is_valid() :
+                messages.success(req, 'Registration Successfull')
+                register_form.save()
+                return redirect('register')
+        else : 
+            register_form = RegistrationForm()
+        return render(req, 'author/register.html', {'form' : register_form, 'type' : 'Register'})
+    else :
+        return redirect('home')
 
 
 # User Login Using Function View
@@ -70,6 +74,7 @@ def user_logout(req) :
     return redirect('login')
 
 # User Logout Using Class View
+@method_decorator(login_required(login_url="/author/login/"), name='dispatch')
 class UserLogoutView(LogoutView) :    
     def get_success_url(self):
         return reverse_lazy('login')
